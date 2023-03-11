@@ -3,7 +3,7 @@ input.onButtonEvent(Button.A, input.buttonEventClick(), function () {
     music.playTone(988, music.beat(BeatFraction.Eighth))
     basic.setLedColor(0x0000ff)
 })
-pins.onPulsed(DigitalPin.P3, PulseValue.Low, function () {
+pins.onPulsed(DigitalPin.P3, PulseValue.High, function () {
     counter += 1
 })
 input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
@@ -11,13 +11,13 @@ input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
     music.playTone(131, music.beat(BeatFraction.Eighth))
     basic.setLedColor(0x000000)
 })
+let counter = 0
 serial.redirectToUSB()
 serial.setBaudRate(BaudRate.BaudRate115200)
-let counter = 0
-pins.setPull(DigitalPin.P3, PinPullMode.PullUp)
 pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
+pins.setPull(DigitalPin.P3, PinPullMode.PullNone)
 pins.digitalWritePin(DigitalPin.P0, 0)
 serial.writeLine("Initialized.")
 basic.forever(function () {

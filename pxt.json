@@ -7,7 +7,9 @@
     "files": [
         "main.blocks",
         "main.ts",
-        "README.md"
+        "README.md",
+        "groove-ledbar.ts",
+        "misc-tools.ts"
     ],
     "testFiles": [
         "test.ts"

@@ -9,16 +9,14 @@ input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
     pins.digitalWritePin(DigitalPin.P0, 0)
     basic.setLedColor(0x000000)
 })
-serial.redirect(
-SerialPin.C17,
-SerialPin.C16,
-BaudRate.BaudRate115200
-)
+serial.redirectToUSB()
+serial.setBaudRate(BaudRate.BaudRate115200)
 let counter = 0
 pins.setPull(DigitalPin.P3, PinPullMode.PullUp)
 pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
+serial.writeLine("Initialized.")
 basic.forever(function () {
     basic.pause(1000)
     basic.showNumber(counter)

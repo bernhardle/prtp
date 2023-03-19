@@ -1,3 +1,17 @@
+control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_A, EventBusValue.MICROBIT_BUTTON_EVT_UP, function () {
+    music.playTone(131, music.beat(BeatFraction.Eighth))
+    pins.digitalWritePin(DigitalPin.P0, 0)
+    relaystate = false
+    ledrelay = ledrelayoff
+    pulseoff = true
+})
+control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_A, EventBusValue.MICROBIT_BUTTON_EVT_DOWN, function () {
+    music.playTone(988, music.beat(BeatFraction.Eighth))
+    pins.digitalWritePin(DigitalPin.P0, 1)
+    relaystate = true
+    ledrelay = ledrelayon
+    pulseoff = false
+})
 pins.onPulsed(DigitalPin.P3, PulseValue.High, function () {
     pulsecounter += 1
     tmp = diverseTools.timeStamp()
@@ -10,24 +24,31 @@ pins.onPulsed(DigitalPin.P3, PulseValue.High, function () {
 })
 let tmp = 0
 let pulsecounter = 0
+let ledrelay = 0
+let ledrelayoff = 0
+let ledrelayon = 0
 let blinklatch = false
 let pulseoff = false
 let timestamp = 0
+let relaystate = false
 serial.redirectToUSB()
 serial.setBaudRate(BaudRate.BaudRate115200)
-let relaystate = false
+// Variable reflects status of relay.
+relaystate = false
 timestamp = diverseTools.timeStamp()
+// Variable is 'true' after relay has been switched to 'off' until next flow meter pulse is received.
 pulseoff = false
 blinklatch = false
-let ledrelayon = basic.rgb(0, 0, 128)
-let ledrelayoff = basic.rgb(0, 0, 0)
+ledrelayon = basic.rgb(0, 0, 128)
+ledrelayoff = basic.rgb(0, 0, 0)
 let ledflashfirst = basic.rgb(255, 255, 255)
-let ledrelay = ledrelayoff
+ledrelay = ledrelayoff
 pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P3, PinPullMode.PullNone)
 pins.digitalWritePin(DigitalPin.P0, 0)
+led.setBrightness(128)
 serial.writeLine("Initialized.")
 basic.forever(function () {
     basic.pause(1000)
@@ -39,23 +60,6 @@ basic.forever(function () {
 })
 control.inBackground(function () {
     while (true) {
-        if (input.buttonIsPressed(Button.A)) {
-            if (!(relaystate)) {
-                music.playTone(988, music.beat(BeatFraction.Eighth))
-                pins.digitalWritePin(DigitalPin.P0, 1)
-                relaystate = true
-                ledrelay = ledrelayon
-                pulseoff = false
-            }
-        } else {
-            if (relaystate) {
-                music.playTone(131, music.beat(BeatFraction.Eighth))
-                pins.digitalWritePin(DigitalPin.P0, 0)
-                relaystate = false
-                ledrelay = ledrelayoff
-                pulseoff = true
-            }
-        }
         if (blinklatch) {
             blinklatch = false
             basic.setLedColor(ledflashfirst)

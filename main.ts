@@ -82,8 +82,8 @@ serial.writeLine("" + control.deviceName() + " initialized.")
 basic.showString(control.deviceName())
 loops.everyInterval(1000, function () {
     basic.showNumber(Math.round(swirlcountlap * 37 / 49))
-    swirlcountlap = 0
     serial.writeLine("" + convertToText(swirlcount) + " " + convertToText(swirlcountlap) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
+    swirlcountlap = 0
 })
 control.inBackground(function () {
     while (true) {

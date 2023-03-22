@@ -3,6 +3,16 @@ control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_A, EventBusValue.MICROBIT_BUTT
         stoppulse()
     }
 })
+control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_B, EventBusValue.MICROBIT_BUTTON_EVT_CLICK, function () {
+    if (autopulse) {
+        autopulse = false
+        ledrelayoff = basic.rgb(0, 0, 0)
+        stoppulse()
+    } else {
+        autopulse = true
+        ledrelayoff = basic.rgb(0, 0, 32)
+    }
+})
 function stoppulse () {
     if (0 != relaystate) {
         pulseoff = true
@@ -39,16 +49,7 @@ pins.onPulsed(DigitalPin.P3, PulseValue.High, function () {
         blinklatch = true
     }
 })
-input.onButtonEvent(Button.B, input.buttonEventClick(), function () {
-    if (autopulse) {
-        autopulse = false
-        ledrelayoff = basic.rgb(0, 0, 0)
-        stoppulse()
-    } else {
-        autopulse = true
-        ledrelayoff = basic.rgb(0, 0, 32)
-    }
-})
+let flowrate = 0
 let tmp = 0
 let relaystate = 0
 let autopulse = false
@@ -79,36 +80,37 @@ pins.setPull(DigitalPin.P3, PinPullMode.PullNone)
 pins.digitalWritePin(DigitalPin.P0, relaystate)
 led.setBrightness(128)
 serial.writeLine("" + control.deviceName() + " initialized.")
-basic.showString(control.deviceName())
+basic.showString(control.deviceName(), 50)
 loops.everyInterval(1000, function () {
-    basic.showNumber(Math.round(swirlcountlap * 37 / 49))
-    serial.writeLine("" + convertToText(swirlcount) + " " + convertToText(swirlcountlap) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
+    flowrate = Math.round(swirlcountlap * 37 / 49)
+    serial.writeLine("" + diverseTools.timeStamp() + " " + convertToText(swirlcount) + " " + convertToText(flowrate) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
     swirlcountlap = 0
+    basic.showNumber(flowrate)
 })
 control.inBackground(function () {
     while (true) {
         if (autopulse) {
             startpulse()
-            for (let index = 0; index < 25; index++) {
+            for (let index = 0; index < 15; index++) {
                 if (autopulse) {
                     basic.pause(200)
                 }
             }
-            if (autopulse) {
-                stoppulse()
-                for (let index = 0; index < 10; index++) {
-                    if (autopulse) {
-                        basic.pause(200)
-                    }
+        }
+        if (autopulse) {
+            stoppulse()
+            for (let index = 0; index < 8; index++) {
+                if (autopulse) {
+                    basic.pause(200)
                 }
             }
         }
         if (blinklatch) {
             basic.setLedColor(ledflashfirst)
             blinklatch = false
-            basic.pause(80)
+            basic.pause(40)
         }
         basic.setLedColor(ledrelay)
-        basic.pause(100)
+        basic.pause(80)
     }
 })

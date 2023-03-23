@@ -42,21 +42,28 @@ pins.onPulsed(DigitalPin.P3, PulseValue.High, function () {
     swirlcount += 1
     swirlcountlap += 1
     tmp = diverseTools.timeStamp()
-    serial.writeValue("Time", tmp - timestamp)
+    squareDisplay.barGraph(1000 / (1 + (tmp - timestamp)), 30)
     timestamp = tmp
     if (pulseoff) {
         pulseoff = false
-        blinklatch = true
+        control.raiseEvent(
+        EventBusSource.MICROBIT_ID_IO_P1,
+        EventBusValue.MICROBIT_PIN_EVT_RISE
+        )
     }
 })
-let flowrate = 0
+control.onEvent(EventBusSource.MICROBIT_ID_IO_P1, EventBusValue.MICROBIT_PIN_EVT_RISE, function () {
+    basic.setLedColor(ledflashfirst)
+    basic.pause(40)
+    basic.setLedColor(ledrelay)
+})
 let tmp = 0
 let relaystate = 0
 let autopulse = false
 let ledrelay = 0
+let ledflashfirst = 0
 let ledrelayoff = 0
 let ledrelayon = 0
-let blinklatch = false
 let pulseoff = false
 let timestamp = 0
 serial.redirectToUSB()
@@ -64,10 +71,11 @@ serial.setBaudRate(BaudRate.BaudRate115200)
 timestamp = diverseTools.timeStamp()
 // Variable is 'true' after relay has been switched to 'off' until next flow meter pulse is received.
 pulseoff = false
-blinklatch = false
+let blinklatch = false
+let flowrate = 0
 ledrelayon = basic.rgb(0, 0, 164)
 ledrelayoff = basic.rgb(0, 0, 0)
-let ledflashfirst = basic.rgb(255, 255, 255)
+ledflashfirst = basic.rgb(255, 255, 255)
 ledrelay = ledrelayoff
 autopulse = false
 relaystate = 0
@@ -81,11 +89,13 @@ pins.digitalWritePin(DigitalPin.P0, relaystate)
 led.setBrightness(128)
 serial.writeLine("" + control.deviceName() + " initialized.")
 basic.showString(control.deviceName(), 50)
-loops.everyInterval(1000, function () {
-    flowrate = Math.round(swirlcountlap * 37 / 49)
-    serial.writeLine("" + diverseTools.timeStamp() + " " + convertToText(swirlcount) + " " + convertToText(flowrate) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
+loops.everyInterval(500, function () {
+    flowrate = swirlcountlap * 37 / 49
     swirlcountlap = 0
-    basic.showNumber(flowrate)
+    serial.writeLine("" + diverseTools.timeStamp() + " " + convertToText(swirlcount) + " " + convertToText(flowrate) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
+    if (800 < diverseTools.timeStamp() - timestamp) {
+        squareDisplay.barGraph(0, 100)
+    }
 })
 control.inBackground(function () {
     while (true) {
@@ -105,12 +115,6 @@ control.inBackground(function () {
                 }
             }
         }
-        if (blinklatch) {
-            basic.setLedColor(ledflashfirst)
-            blinklatch = false
-            basic.pause(40)
-        }
-        basic.setLedColor(ledrelay)
-        basic.pause(80)
+        basic.pause(100)
     }
 })

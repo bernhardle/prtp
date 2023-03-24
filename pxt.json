@@ -8,7 +8,6 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "groove-ledbar.ts",
         "misc-tools.ts"
     ],
     "testFiles": [
@@ -25,22 +24,5 @@
     "supportedTargets": [
         "calliopemini"
     ],
-    "preferredEditor": "blocksprj",
-    "yotta": {
-        "config": {
-            "microbit-dal": {
-                "bluetooth": {
-                    "pairing_mode": 1,
-                    "partial_flashing": 0,
-                    "dfu_service": 1,
-                    "event_service": 0,
-                    "device_info_service": 1
-                },
-                "stack_size": 1280,
-                "gatt_table_size": "0x300",
-                "sram_end": "0x20004000",
-                "RAM_SIZE": "\"16K\""
-            }
-        }
-    }
+    "preferredEditor": "blocksprj"
 }

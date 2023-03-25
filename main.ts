@@ -59,22 +59,22 @@ serial.onDataReceived(serial.delimiters(Delimiters.CarriageReturn), function () 
     if (serialreceived.includes("=")) {
         tmptextarray = serialreceived.split("=")
         if (0 == "log".compare(tmptextarray[0])) {
-            tmpintvalue = parseFloat(tmptextarray[1])
+            tmpintvalue = Math.constrain(parseFloat(tmptextarray[1]), 0, 20)
             seriallog = tmpintvalue
             storage.putNumber(StorageSlots.s2, tmpintvalue)
             serial.writeValue("log", seriallog)
         } else if (0 == "on".compare(tmptextarray[0])) {
-            tmpintvalue = parseFloat(tmptextarray[1])
+            tmpintvalue = Math.constrain(parseFloat(tmptextarray[1]), 3, 50)
             pulseontime = tmpintvalue
             storage.putNumber(StorageSlots.s3, pulseontime)
             serial.writeValue("on", pulseontime)
         } else if (0 == "off".compare(tmptextarray[0])) {
-            tmpintvalue = parseFloat(tmptextarray[1])
+            tmpintvalue = Math.constrain(parseFloat(tmptextarray[1]), 3, 50)
             pulseofftime = tmpintvalue
             storage.putNumber(StorageSlots.s4, pulseofftime)
             serial.writeValue("off", pulseofftime)
         } else if (0 == "max".compare(tmptextarray[0])) {
-            tmpintvalue = parseFloat(tmptextarray[1])
+            tmpintvalue = Math.constrain(parseFloat(tmptextarray[1]), 20, 100)
             bargraphmax = tmpintvalue
             storage.putNumber(StorageSlots.s5, bargraphmax)
             serial.writeValue("max", bargraphmax)
@@ -124,6 +124,7 @@ relaystate = 0
 pulseofftime = 8
 pulseontime = 15
 seriallog = 0
+let serialturn = 0
 let swirlcount = 0
 let swirlcountlap = 0
 // Variable is 'true' after relay has been switched to 'off' until next flow meter pulse is received.
@@ -176,11 +177,11 @@ control.inBackground(function () {
         }
     }
 })
-loops.everyInterval(200, function () {
+loops.everyInterval(100, function () {
     flowratepast = flowrate
     flowrate = 0.1 * Math.round(swirlcountlap * 370 / 49)
     swirlcountlap = 0
-    if (seriallog) {
+    if (0 < seriallog && 0 == serialturn % seriallog) {
         serial.writeLine("" + convertToText(swirlcount) + " " + convertToText(flowrate) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
     }
     if (bargraphresetswirlcount < swirlcount && 800 < diverseTools.timeStamp() - timestamp) {
@@ -190,4 +191,5 @@ loops.everyInterval(200, function () {
             ledflash(ledflashlast)
         }
     }
+    serialturn += 1
 })

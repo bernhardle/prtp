@@ -40,7 +40,7 @@ pins.onPulsed(DigitalPin.P3, PulseValue.High, function () {
     tmpintvalue = diverseTools.timeStamp()
     swirlcount += 1
     swirlcountlap += 1
-    squareDisplay.barGraph(1000 / (1 + (tmpintvalue - timestamp)), bargraphmax)
+    squareDisplay.barGraph(755 / (1 + (tmpintvalue - timestamp)), bargraphmax)
     timestamp = tmpintvalue
     if (swirlstartafterpulse) {
         swirlstartafterpulse = false
@@ -134,17 +134,34 @@ pins.setPull(DigitalPin.P1, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P2, PinPullMode.PullNone)
 pins.setPull(DigitalPin.P3, PinPullMode.PullNone)
 pins.digitalWritePin(DigitalPin.P0, relaystate)
-led.setBrightness(128)
+led.setBrightness(255)
 serial.writeLine(control.deviceName())
+basic.showString(control.deviceName(), 50)
 if (1 == storage.getNumber(StorageSlots.s1)) {
-    seriallog = storage.getNumber(StorageSlots.s2)
-    serial.writeValue("log", seriallog)
-    pulseontime = storage.getNumber(StorageSlots.s3)
-    serial.writeValue("on", pulseontime)
-    pulseofftime = storage.getNumber(StorageSlots.s4)
-    serial.writeValue("off", pulseofftime)
-    bargraphmax = storage.getNumber(StorageSlots.s5)
-    serial.writeValue("max", bargraphmax)
+    tmpintvalue = storage.getNumber(StorageSlots.s2)
+    if (seriallog != tmpintvalue) {
+        seriallog = tmpintvalue
+        serial.writeValue("log", seriallog)
+        basic.showString("log:" + convertToText(seriallog))
+    }
+    tmpintvalue = storage.getNumber(StorageSlots.s3)
+    if (pulseontime != tmpintvalue) {
+        pulseontime = tmpintvalue
+        serial.writeValue("on", pulseontime)
+        basic.showString("on:" + convertToText(pulseontime))
+    }
+    tmpintvalue = storage.getNumber(StorageSlots.s4)
+    if (pulseofftime != tmpintvalue) {
+        pulseofftime = tmpintvalue
+        serial.writeValue("off", pulseofftime)
+        basic.showString("off:" + convertToText(pulseofftime))
+    }
+    tmpintvalue = storage.getNumber(StorageSlots.s5)
+    if (bargraphmax != tmpintvalue) {
+        bargraphmax = tmpintvalue
+        serial.writeValue("max", bargraphmax)
+        basic.showString("max:" + convertToText(bargraphmax))
+    }
 } else {
     storage.putNumber(StorageSlots.s1, 1)
     storage.putNumber(StorageSlots.s2, seriallog)
@@ -152,7 +169,7 @@ if (1 == storage.getNumber(StorageSlots.s1)) {
     storage.putNumber(StorageSlots.s4, pulseofftime)
     storage.putNumber(StorageSlots.s5, bargraphmax)
 }
-basic.showString(control.deviceName(), 50)
+led.setBrightness(90)
 squareDisplay.barGraph(0, bargraphmax)
 control.inBackground(function () {
     while (true) {
@@ -178,10 +195,10 @@ control.inBackground(function () {
     }
 })
 loops.everyInterval(100, function () {
-    flowratepast = flowrate
-    flowrate = 0.1 * Math.round(swirlcountlap * 370 / 49)
-    swirlcountlap = 0
     if (0 < seriallog && 0 == serialturn % seriallog) {
+        flowratepast = flowrate
+        flowrate = 0.1 * Math.round(swirlcountlap * 370 / 49)
+        swirlcountlap = 0
         serial.writeLine("" + convertToText(swirlcount) + " " + convertToText(flowrate) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
     }
     if (bargraphresetswirlcount < swirlcount && 800 < diverseTools.timeStamp() - timestamp) {

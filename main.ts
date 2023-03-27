@@ -113,7 +113,6 @@ bargraphmax = 30
 let bargraphresetswirlcount = 0
 let blinklatch = false
 let flowrate = 0
-let flowratepast = 0
 ledrelayon = basic.rgb(0, 0, 164)
 ledrelayoff = basic.rgb(0, 0, 0)
 ledflashfirst = basic.rgb(0, 255, 0)
@@ -195,10 +194,11 @@ control.inBackground(function () {
     }
 })
 loops.everyInterval(100, function () {
-    if (0 < seriallog && 0 == serialturn % seriallog) {
-        flowratepast = flowrate
-        flowrate = 0.1 * Math.round(swirlcountlap * 370 / 49)
+    if (0 == serialturn % 10) {
+        flowrate = Math.round(swirlcountlap * 3700 / 49)
         swirlcountlap = 0
+    }
+    if (0 < seriallog && 0 == serialturn % seriallog) {
         serial.writeLine("" + convertToText(swirlcount) + " " + convertToText(flowrate) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
     }
     if (bargraphresetswirlcount < swirlcount && 800 < diverseTools.timeStamp() - timestamp) {

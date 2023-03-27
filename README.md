@@ -1,5 +1,5 @@
 
-> Diese Seite bei [https://bernhardle.github.io/purotap/](https://bernhardle.github.io/purotap/) öffnen
+> Diese Seite bei [https://bernhardle.github.io/prtp/](https://bernhardle.github.io/prtp/) öffnen
 
 ## Als Erweiterung verwenden
 
@@ -8,22 +8,22 @@ Dieses Repository kann als **Erweiterung** in MakeCode hinzugefügt werden.
 * öffne [https://makecode.calliope.cc/](https://makecode.calliope.cc/)
 * klicke auf **Neues Projekt**
 * klicke auf **Erweiterungen** unter dem Zahnrad-Menü
-* nach **https://github.com/bernhardle/purotap** suchen und importieren
+* nach **https://github.com/bernhardle/prtp** suchen und importieren
 
-## Dieses Projekt bearbeiten ![Build Status Abzeichen](https://github.com/bernhardle/purotap/workflows/MakeCode/badge.svg)
+## Dieses Projekt bearbeiten ![Build Status Abzeichen](https://github.com/bernhardle/prtp/workflows/MakeCode/badge.svg)
 
 Um dieses Repository in MakeCode zu bearbeiten.
 
 * öffne [https://makecode.calliope.cc/](https://makecode.calliope.cc/)
 * klicke auf **Importieren** und dann auf **Importiere URL**
-* füge **https://github.com/bernhardle/purotap** ein und klicke auf Importieren
+* füge **https://github.com/bernhardle/prtp** ein und klicke auf Importieren
 
 ## Blockvorschau
 
 Dieses Bild zeigt den Blockcode vom letzten Commit im Master an.
 Die Aktualisierung dieses Bildes kann einige Minuten dauern.
 
-![Eine gerenderte Ansicht der Blöcke](https://github.com/bernhardle/purotap/raw/master/.github/makecode/blocks.png)
+![Eine gerenderte Ansicht der Blöcke](https://github.com/bernhardle/prtp/raw/master/.github/makecode/blocks.png)
 
 #### Metadaten (verwendet für Suche, Rendering)
 

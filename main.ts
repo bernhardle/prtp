@@ -199,7 +199,7 @@ loops.everyInterval(100, function () {
         swirlcountlap = 0
     }
     if (0 < seriallog && 0 == serialturn % seriallog) {
-        serial.writeLine("" + convertToText(swirlcount) + " " + convertToText(flowrate) + " " + convertToText(pins.analogReadPin(AnalogPin.P1)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
+        serial.writeLine("" + convertToText(swirlcount) + " " + convertToText(flowrate) + " " + convertToText(pins.analogReadPin(AnalogPin.C5)) + " " + convertToText(pins.analogReadPin(AnalogPin.P2)) + " " + convertToText(input.soundLevel()) + " " + convertToText(relaystate))
     }
     if (bargraphresetswirlcount < swirlcount && 800 < diverseTools.timeStamp() - timestamp) {
         squareDisplay.barGraph(0, bargraphmax)

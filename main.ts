@@ -16,26 +16,16 @@ function stoppulse () {
     ledrelay = ledrelayoff
     basic.setLedColor(ledrelay)
 }
-function ledflash (rgb: number) {
-    basic.setLedColor(rgb)
-    basic.pause(5)
-    basic.setLedColor(ledrelay)
-}
-function startpulse () {
-    if (1 != relaystate) {
-        swirlstartafterpulse = false
-        relaystate = 1
-        pins.digitalWritePin(DigitalPin.P0, relaystate)
-        music.playTone(988, music.beat(BeatFraction.Sixteenth))
-    }
-    ledrelay = ledrelayon
-    basic.setLedColor(ledrelay)
-}
 control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_A, EventBusValue.MICROBIT_BUTTON_EVT_DOWN, function () {
     if (!(autopulse)) {
         startpulse()
     }
 })
+function ledflash (rgb: number) {
+    basic.setLedColor(rgb)
+    basic.pause(5)
+    basic.setLedColor(ledrelay)
+}
 pins.onPulsed(DigitalPin.P3, PulseValue.High, function () {
     tmpintvalue = diverseTools.timeStamp()
     swirlcount += 1
@@ -81,6 +71,16 @@ serial.onDataReceived(serial.delimiters(Delimiters.CarriageReturn), function () 
         }
     }
 })
+function startpulse () {
+    if (1 != relaystate) {
+        swirlstartafterpulse = false
+        relaystate = 1
+        pins.digitalWritePin(DigitalPin.P0, relaystate)
+        music.playTone(988, music.beat(BeatFraction.Sixteenth))
+    }
+    ledrelay = ledrelayon
+    basic.setLedColor(ledrelay)
+}
 function toggleautopulse () {
     if (autopulse) {
         autopulse = false
@@ -91,8 +91,13 @@ function toggleautopulse () {
         ledrelayoff = basic.rgb(0, 0, 32)
     }
 }
+let bargraphresetswirlcount = 0
+let flowrate = 0
+let serialturn = 0
 let tmptextarray: string[] = []
 let serialreceived = ""
+let swirlcountlap = 0
+let swirlcount = 0
 let tmpintvalue = 0
 let swirlstartafterpulse = false
 let seriallog = 0
@@ -106,13 +111,11 @@ let ledrelayoff = 0
 let ledrelayon = 0
 let bargraphmax = 0
 let timestamp = 0
+let blinklatch = false
 serial.redirectToUSB()
 serial.setBaudRate(BaudRate.BaudRate115200)
 timestamp = diverseTools.timeStamp()
 bargraphmax = 30
-let bargraphresetswirlcount = 0
-let blinklatch = false
-let flowrate = 0
 ledrelayon = basic.rgb(0, 0, 164)
 ledrelayoff = basic.rgb(0, 0, 0)
 ledflashfirst = basic.rgb(0, 255, 0)
@@ -123,9 +126,6 @@ relaystate = 0
 pulseofftime = 8
 pulseontime = 15
 seriallog = 0
-let serialturn = 0
-let swirlcount = 0
-let swirlcountlap = 0
 // Variable is 'true' after relay has been switched to 'off' until next flow meter pulse is received.
 swirlstartafterpulse = false
 pins.setPull(DigitalPin.P0, PinPullMode.PullNone)
